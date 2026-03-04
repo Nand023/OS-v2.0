@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel - Téc Nando Informática</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-bg: #000000;
+            --main-bg: #0a0a0a;
+            --card-bg: #111111;
+            --accent-color: #0d6efd;
+            --text-gray: #b0b0b0;
+        }
+
+        body {
+            background: var(--main-bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            background: var(--sidebar-bg);
+            min-height: 100vh;
+            width: 260px;
+            position: fixed;
+            border-right: 1px solid #222;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            width: calc(100% - 260px);
+        }
+
+        .logo-sidebar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(13, 110, 253, 0.3);
+        }
+
+        .user-card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 25px;
+        }
+
+        .nav-link {
+            color: var(--text-gray);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(13, 110, 253, 0.1);
+            color: white;
+            box-shadow: inset 4px 0 0 var(--accent-color);
+        }
+
+        .nav-link i { font-size: 1.2rem; margin-right: 12px; }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover { border-color: #444; transform: translateY(-3px); }
+
+        .stat-icon {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 2.5rem;
+            opacity: 0.2;
+        }
+
+        .chart-box {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 20px;
+            padding: 25px;
+            height: 100%;
+        }
+
+        .btn-quick {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            text-align: left;
+            padding: 20px;
+            border-radius: 15px;
+            transition: 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-quick:hover {
+            background: #222;
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .alert-stock {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+            color: #ff6b6b;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 80px; padding: 20px 10px; }
+            .sidebar h5, .sidebar span, .sidebar small, .sidebar hr { display: none; }
+            .main-content { margin-left: 80px; width: calc(100% - 80px); }
+            .nav-link span { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-sidebar">
+            <h5 class="fw-bold tracking-tight">TÉC NANDO</h5>
+        </div>
+
+        <div class="user-card text-center">
+            <small class="text-muted d-block">Operador</small>
+            <span class="fw-bold">{{ session['usuario_nome'] }}</span>
+        </div>
+
+        <nav>
+            <a href="/" class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> <span>Dashboard</span></a>
+            <a href="/ordens" class="nav-link"><i class="bi bi-tools"></i> <span>Ordens de Serviço</span></a>
+            <a href="/estoque" class="nav-link"><i class="bi bi-box-seam"></i> <span>Estoque</span></a>
+            <a href="/financeiro" class="nav-link"><i class="bi bi-cash-stack"></i> <span>Financeiro</span></a>
+            
+            {% if session['usuario_login'] == 'Luiz' %}
+            <hr style="border-color: #333;">
+            <a href="/usuarios" class="nav-link text-info"><i class="bi bi-people"></i> <span>Usuários</span></a>
+            {% endif %}
+        </nav>
+
+        <div class="mt-auto">
+            <a href="/logout" class="btn btn-outline-danger w-100 border-0">
+                <i class="bi bi-power me-2"></i>Sair
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold m-0">Bem-vindo, {{ session['usuario_nome'].split()[0] }}!</h2>
+                <p class="text-muted">Aqui está o resumo da sua assistência técnica.</p>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-dark p-2 border border-secondary">{{ datetime_now if datetime_now else "" }}</span>
+            </div>
+        </header>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <small class="text-muted fw-bold">FATURAMENTO</small>
+                    <h3 class="fw-bold mt-1 text-primary">R$ {{ "%.2f"|format(total) }}</h3>
+                    <i class="bi bi-currency-dollar stat-icon text-primary"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <small class="text-muted fw-bold">EM MANUTENÇÃO</small>
+                    <h3 class="fw-bold mt-1 text-warning">{{ abertas }}</h3>
+                    <i class="bi bi-hourglass-split stat-icon text-warning"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <small class="text-muted fw-bold">CONCLUÍDOS</small>
+                    <h3 class="fw-bold mt-1 text-success">{{ finalizadas }}</h3>
+                    <i class="bi bi-check-circle stat-icon text-success"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <small class="text-muted fw-bold">DESPESAS</small>
+                    <h3 class="fw-bold mt-1 text-danger">R$ {{ "%.2f"|format(pagar) }}</h3>
+                    <i class="bi bi-arrow-down-circle stat-icon text-danger"></i>
+                </div>
+            </div>
+        </div>
+
+        {% if alertas %}
+        <div class="alert alert-stock d-flex align-items-center mb-4">
+            <i class="bi bi-lightning-charge-fill me-3 fs-4"></i>
+            <div>
+                <strong>Alerta de Estoque:</strong> 
+                {% for a in alertas %}
+                    <span class="badge bg-danger rounded-pill ms-1">{{ a.peca }} ({{ a.quantidade }})</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="chart-box">
+                    <h5 class="fw-bold mb-4">Status das Ordens</h5>
+                    <div style="height: 320px;">
+                        <canvas id="graficoStatus"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="chart-box">
+                    <h5 class="fw-bold mb-4">Acesso Rápido</h5>
+                    <div class="d-grid gap-3">
+                        <a href="/ordens" class="btn-quick">
+                            <i class="bi bi-plus-lg text-primary me-2"></i> Nova Ordem de Serviço
+                        </a>
+                        <a href="/estoque" class="btn-quick">
+                            <i class="bi bi-search text-warning me-2"></i> Consultar Peça em Estoque
+                        </a>
+                        <a href="/financeiro" class="btn-quick">
+                            <i class="bi bi-file-earmark-bar-graph text-info me-2"></i> Relatório Financeiro
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('graficoStatus');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Aguardando Orçamento', 'Em Manutenção', 'Finalizado'],
+                datasets: [{
+                    data: [{{ aguardando }}, {{ manutencao }}, {{ finalizadas }}],
+                    backgroundColor: ['#ffc107', '#0d6efd', '#198754'],
+                    borderWidth: 0,
+                    hoverOffset: 20
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#888', padding: 20, font: { size: 12 } }
+                    }
+                },
+                cutout: '75%'
+            }
+        });
+    </script>
+</body>
+</html>

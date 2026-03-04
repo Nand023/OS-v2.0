@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar - Técnando Informática</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000; /* Fundo preto igual ao login */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .register-card {
+            background: #111;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #333;
+        }
+        .form-control {
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            padding: 12px;
+        }
+        .form-control:focus {
+            background: #252525;
+            color: white;
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+        .btn-primary {
+            padding: 12px;
+            font-weight: bold;
+            background-color: #0d6efd;
+            border: none;
+        }
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 2px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-card text-center text-white">
+        <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-img" alt="Logo">
+        
+        <h3 class="mb-4">Criar Conta</h3>
+        
+        <form action="/registrar" method="POST">
+            <div class="mb-3 text-start">
+                <label class="form-label small">USUÁRIO</label>
+                <input type="text" name="usuario" class="form-control" placeholder="Escolha um nome de usuário" required>
+            </div>
+            
+            <div class="mb-4 text-start">
+                <label class="form-label small">SENHA</label>
+                <input type="password" name="senha" class="form-control" placeholder="Crie uma senha" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 mb-3">CADASTRAR</button>
+            
+            <p class="small text-muted">
+                Já tem uma conta? <a href="/login" class="text-decoration-none text-primary">Faça Login</a>
+            </p>
+        </form>
+    </div>
+
+</body>
+</html>

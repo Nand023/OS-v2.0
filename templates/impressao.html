@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Imprimir OS #{{ os.id }} - Técnando</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #fff; font-family: 'Arial', sans-serif; color: #000; }
+        
+        .ticket {
+            width: 800px;
+            margin: 20px auto;
+            border: 2px solid #000;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header-os {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logo-print { width: 80px; height: 80px; border-radius: 50%; }
+
+        .info-section { margin-bottom: 15px; }
+        .label { font-weight: bold; text-transform: uppercase; font-size: 12px; color: #555; }
+        .data { font-size: 16px; font-weight: bold; }
+
+        .footer-print {
+            margin-top: 30px;
+            border-top: 1px dashed #000;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .signature-line {
+            margin-top: 40px;
+            border-top: 1px solid #000;
+            width: 250px;
+            display: inline-block;
+        }
+
+        /* Estilo para o botão de imprimir sumir na hora do papel */
+        @media print {
+            .no-print { display: none; }
+            .ticket { border: none; width: 100%; margin: 0; padding: 0; }
+            body { background: #fff; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="text-center mt-4 no-print">
+        <button onclick="window.print()" class="btn btn-primary btn-lg">
+            <i class="bi bi-printer"></i> IMPRIMIR AGORA
+        </button>
+        <a href="/ordens" class="btn btn-outline-secondary btn-lg">VOLTAR</a>
+    </div>
+
+    <div class="ticket">
+        <div class="header-os">
+            <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-print me-3">
+                <div>
+                    <h2 class="mb-0">TÉCNANDO INFORMÁTICA</h2>
+                    <p class="mb-0 small text-muted">Assistência Técnica e Soluções</p>
+                </div>
+            </div>
+            <div class="text-end">
+                <h4 class="mb-0">ORDEM DE SERVIÇO</h4>
+                <h2 class="text-danger">#{{ os.id }}</h2>
+            </div>
+        </div>
+
+        <div class="row info-section">
+            <div class="col-6">
+                <div class="label">Cliente</div>
+                <div class="data">{{ os.cliente }}</div>
+            </div>
+            <div class="col-6">
+                <div class="label">WhatsApp / Telefone</div>
+                <div class="data">{{ os.telefone }}</div>
+            </div>
+        </div>
+
+        <div class="row info-section">
+            <div class="col-4">
+                <div class="label">Equipamento</div>
+                <div class="data">{{ os.aparelho }}</div>
+            </div>
+            <div class="col-4">
+                <div class="label">Data de Entrada</div>
+                <div class="data">{{ os.data }}</div>
+            </div>
+            <div class="col-4">
+                <div class="label">Status Atual</div>
+                <div class="data">{{ os.status }}</div>
+            </div>
+        </div>
+
+        <div class="info-section border p-3 bg-light rounded">
+            <div class="label">Defeito Relatado / Observações</div>
+            <div class="data" style="font-weight: normal;">{{ os.defeito or 'Nenhuma observação registrada.' }}</div>
+        </div>
+
+        <div class="text-end mt-4">
+            <div class="label">Valor Total Estimado</div>
+            <h1 class="fw-bold">R$ {{ "%.2f"|format(os.valor) }}</h1>
+        </div>
+
+        <div class="footer-print">
+            <p>Aparelhos não retirados em 90 dias poderão ser vendidos para custear as despesas de reparo e armazenamento conforme lei vigente.</p>
+            
+            <div class="d-flex justify-content-around">
+                <div>
+                    <div class="signature-line"></div>
+                    <p>Assinatura do Cliente</p>
+                </div>
+                <div>
+                    <div class="signature-line"></div>
+                    <p>Téc Nando Informática</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

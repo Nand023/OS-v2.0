@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Garantia OS #{{ os.id }}</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #fff; }
+        .ticket { border: 1px solid #333; padding: 20px; width: 700px; margin: 0 auto 30px auto; position: relative; }
+        
+        /* Ajuste para a Logo */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .brand-area { display: flex; align-items: center; gap: 15px; }
+        .logo-img { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 1px solid #eee; }
+        
+        .header h1 { margin: 0; font-size: 22px; text-transform: uppercase; line-height: 1; }
+        .os-badge { background: #333; color: #fff; padding: 5px 15px; font-weight: bold; font-size: 12px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+        .box-container { display: flex; gap: 10px; margin: 20px 0; }
+        .box { flex: 1; border: 1px solid #0d6efd; border-radius: 5px; padding: 10px; text-align: center; color: #0d6efd; font-weight: bold; }
+        .box.gray { border-color: #ddd; color: #666; background: #f9f9f9; }
+        .termos { font-size: 11px; color: #555; text-align: justify; border-top: 1px solid #eee; padding-top: 10px; }
+        .corte { border-top: 1px dashed #ccc; text-align: center; margin: 40px 0; font-size: 10px; color: #999; }
+        .assinaturas { display: flex; justify-content: space-around; margin-top: 30px; text-align: center; font-size: 12px; }
+        .linha { border-top: 1px solid #333; width: 200px; margin-bottom: 5px; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+
+    <div class="ticket">
+        <div class="header">
+            <div class="brand-area">
+                <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-img">
+                <div>
+                    <h1>TÉC NANDO INFORMÁTICA</h1>
+                    <small>Assistência Técnica</small>
+                </div>
+            </div>
+            <div class="text-end" style="text-align: right;">
+                <div class="os-badge">VIA DO CLIENTE</div>
+                <h2 style="margin: 5px 0 0 0;">OS #{{ os.id }}</h2>
+                <small>Garantia de Serviço</small>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <span><strong>Cliente:</strong> {{ os.cliente }}</span>
+            <span><strong>Aparelho:</strong> {{ os.aparelho }}</span>
+        </div>
+
+        <div style="font-size: 14px; margin-bottom: 5px;"><strong>Serviço/Peças:</strong></div>
+        <div style="border: 1px solid #eee; padding: 8px; font-size: 13px; margin-bottom: 15px; min-height: 20px; background: #fafafa;">
+            {{ os.defeito }}
+        </div>
+
+        <div class="box-container">
+            <div class="box gray">{{ data_hoje }}</div>
+            <div class="box">{{ validade }}</div>
+        </div>
+
+        <div class="termos">
+            <strong>Termos:</strong> Esta garantia cobre apenas os itens descritos acima por 90 dias. A garantia será invalidada em caso de selos rompidos, danos físicos, contato com líquidos ou intervenção de terceiros.
+        </div>
+    </div>
+
+    <div class="corte"> ✂ CORTE AQUI ------------------------------------------------------------------------------------------------------ </div>
+
+    <div class="ticket">
+        <div class="header">
+            <div class="brand-area">
+                <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-img">
+                <div>
+                    <h1>TÉC NANDO INFORMÁTICA</h1>
+                    <small>Comprovante de Retirada</small>
+                </div>
+            </div>
+            <div class="text-end" style="text-align: right;">
+                <div class="os-badge" style="background: #444;">VIA DA LOJA</div>
+                <h4 style="margin: 5px 0 0 0;">Controle Interno #{{ os.id }}</h4>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <span><strong>Cliente:</strong> {{ os.cliente }} | <strong>Tel:</strong> {{ os.telefone }}</span>
+        </div>
+        <div class="info-row">
+            <span><strong>Equipamento:</strong> {{ os.aparelho }} | <strong>Valor:</strong> R$ {{ "%.2f"|format(os.valor) }}</span>
+        </div>
+
+        <div class="info-row" style="margin-top: 20px;">
+            <span><strong>Entrega:</strong> {{ data_hoje }}</span>
+            <span><strong>Fim da Garantia:</strong> {{ validade }}</span>
+        </div>
+
+        <div class="assinaturas">
+            <div>
+                <div class="linha"></div>
+                Assinatura do Técnico
+            </div>
+            <div>
+                <div class="linha"></div>
+                Assinatura do Cliente
+            </div>
+        </div>
+    </div>
+
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()" style="padding: 12px 25px; cursor: pointer; background: #000; color: #fff; border: none; border-radius: 5px; font-weight: bold;">IMPRIMIR CERTIFICADO</button>
+        <a href="/ordens" style="margin-left: 15px; color: #666; text-decoration: none;">Voltar para Ordens</a>
+    </div>
+
+</body>
+</html>

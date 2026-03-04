@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordens de Serviço - Téc Nando Informática</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-bg: #000000;
+            --main-bg: #0a0a0a;
+            --card-bg: #111111;
+            --accent-color: #0d6efd;
+            --text-gray: #e0e0e0;
+            --border-color: #222;
+        }
+
+        body {
+            background: var(--main-bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--sidebar-bg);
+            min-height: 100vh;
+            width: 260px;
+            position: fixed;
+            border-right: 1px solid var(--border-color);
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1050;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            width: calc(100% - 260px);
+        }
+
+        .logo-sidebar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(13, 110, 253, 0.3);
+        }
+
+        .nav-link {
+            color: #b0b0b0;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(13, 110, 253, 0.1);
+            color: white;
+            box-shadow: inset 4px 0 0 var(--accent-color);
+        }
+
+        /* --- AJUSTE DE CORES DA TABELA (PARA NÃO SUMIR NO FUNDO) --- */
+        .table-responsive {
+            overflow: visible !important;
+        }
+
+        .table { 
+            color: #ffffff !important; 
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            background-color: transparent !important;
+        }
+
+        /* Força o fundo das linhas a ser escuro e o texto branco */
+        .table tbody tr { 
+            background-color: #000000 !important; /* Fundo totalmente preto */
+            color: #5f5d5d !important;
+            transition: 0.3s;
+            border: none !important;
+        }
+
+        .table td {
+            padding: 15px;
+            border: none !important;
+            vertical-align: middle;
+            color: #5e5d5d !important; /* Garante que o texto seja branco */
+        }
+
+        /* Cores de destaque nos dados */
+        .cliente-destaque {
+            color: #ffffff !important;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .aparelho-destaque {
+            color: #0dcaf0 !important; /* Azul ciano para destacar o aparelho */
+        }
+
+        /* Cabeçalho da tabela */
+        .table thead th {
+            color: #aaaaaa !important;
+            border: none !important;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        /* Status Pills */
+        .status-pill {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            border: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .status-aguardando { background: #ffc107; color: #000; }
+        .status-manutencao { background: #0dcaf0; color: #000; }
+        .status-finalizado { background: #198754; color: #fff; }
+
+        /* Dropdown */
+        .dropdown-menu {
+            background: #1a1a1a !important;
+            border: 1px solid #333 !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        }
+
+        .dropdown-item { color: #ccc !important; padding: 10px 20px; }
+        .dropdown-item:hover { background: #252525 !important; color: #fff !important; }
+
+        /* Botões de Ação */
+        .btn-action {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background: #222;
+            color: white;
+            margin-left: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); color: white; }
+        .btn-zap:hover { background: #25d366; }
+        .btn-print:hover { background: #444; }
+        .btn-delete:hover { background: #dc3545; }
+
+        .search-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white !important;
+            border-radius: 10px;
+            padding: 12px 20px;
+        }
+        
+        .search-box:focus {
+            background: #222;
+            border-color: var(--accent-color);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar shadow">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-sidebar">
+            <h5 class="fw-bold">TÉCNANDO</h5>
+        </div>
+        <nav>
+            <a href="/" class="nav-link"><i class="bi bi-grid-1x2-fill me-2"></i> Painel</a>
+            <a href="/ordens" class="nav-link active"><i class="bi bi-tools me-2"></i> Ordens de Serviço</a>
+            <a href="/estoque" class="nav-link"><i class="bi bi-box-seam me-2"></i> Estoque</a>
+            <a href="/financeiro" class="nav-link"><i class="bi bi-cash-stack me-2"></i> Financeiro</a>
+        </nav>
+        <div class="mt-auto">
+            <a href="/logout" class="btn btn-outline-danger w-100 border-0"><i class="bi bi-power me-2"></i>Sair</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold mb-0">Gestão de Ordens</h2>
+                <p class="text-muted">Controle total dos serviços em bancada.</p>
+            </div>
+            <button class="btn btn-primary btn-lg rounded-3 px-4 shadow" data-bs-toggle="modal" data-bs-target="#modalOS">
+                <i class="bi bi-plus-lg me-2"></i>Nova Ordem
+            </button>
+        </div>
+
+        <div class="mb-4">
+            <form action="/ordens" method="GET">
+                <div class="input-group">
+                    <input type="text" name="busca" class="form-control search-box" placeholder="Buscar cliente, aparelho ou #OS..." value="{{ request.args.get('busca', '') }}">
+                    <button class="btn btn-primary px-4 fw-bold" type="submit">PESQUISAR</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 80px">ID</th>
+                        <th>CLIENTE</th>
+                        <th>APARELHO</th>
+                        <th>VALOR</th>
+                        <th style="width: 200px">STATUS</th>
+                        <th class="text-end">AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for os in ordens %}
+                    <tr>
+                        <td class="fw-bold text-primary">#{{ os.id }}</td>
+                        <td class="cliente-destaque">{{ os.cliente }}</td>
+                        <td class="aparelho-destaque"><i class="bi bi-phone me-2"></i>{{ os.aparelho }}</td>
+                        <td class="fw-bold">R$ {{ "%.2f"|format(os.valor) }}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="status-pill dropdown-toggle 
+                                    {% if os.status == 'Aguardando Orçamento' %}status-aguardando
+                                    {% elif os.status == 'Em Manutenção' %}status-manutencao
+                                    {% elif os.status == 'Finalizado' %}status-finalizado
+                                    {% else %}bg-secondary text-white{% endif %}" 
+                                    type="button" data-bs-toggle="dropdown">
+                                    {{ os.status }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li><a class="dropdown-item" href="/status/{{ os.id }}/Aguardando Orçamento">🕒 Aguardando Orçamento</a></li>
+                                    <li><a class="dropdown-item" href="/status/{{ os.id }}/Em Manutenção">🛠️ Em Manutenção</a></li>
+                                    <li><hr class="dropdown-divider border-secondary"></li>
+                                    <li><a class="dropdown-item text-success fw-bold" href="/status/{{ os.id }}/Finalizado">✅ Finalizado</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <a href="{{ os.zap_link }}" target="_blank" class="btn-action btn-zap" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                            <a href="/imprimir/{{ os.id }}" class="btn-action btn-print" title="Imprimir OS / Garantia"><i class="bi bi-printer"></i></a>
+                            <a href="/excluir/{{ os.id }}" class="btn-action btn-delete" onclick="return confirm('Deseja realmente excluir a OS #{{ os.id }}?')" title="Excluir"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalOS" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow" style="background: #111; border: 1px solid #333; color: white; border-radius: 20px;">
+                <form action="/inserir" method="POST">
+                    <div class="modal-header border-0 p-4">
+                        <h5 class="modal-title fw-bold">Abrir Nova OS</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4 pt-0">
+                        <input type="text" name="cliente" class="form-control search-box mb-3" placeholder="Nome Completo do Cliente" required>
+                        <input type="text" name="telefone" class="form-control search-box mb-3" placeholder="WhatsApp (ex: 11999998888)" required>
+                        <input type="text" name="equipamento" class="form-control search-box mb-3" placeholder="Aparelho e Modelo" required>
+                        <textarea name="defeito" class="form-control search-box mb-3" placeholder="Descrição do Problema" rows="3"></textarea>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-white">R$</span>
+                            <input type="number" step="0.01" name="valor" class="form-control search-box" placeholder="Valor do Orçamento">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-3 rounded-3">CRIAR ORDEM DE SERVIÇO</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
