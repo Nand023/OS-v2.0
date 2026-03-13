@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
 
@@ -30,7 +30,6 @@ init_db()
 # --- 2. FUNÇÃO AUXILIAR PARA O WHATSAPP ---
 def gerar_link_zap(telefone, id_os, cliente, aparelho):
     msg = f"Olá {cliente}, sua OS #{id_os} do aparelho {aparelho} foi atualizada no sistema da Técnando!"
-    # Remove caracteres estranhos do telefone
     num = ''.join(filter(str.isdigit, str(telefone)))
     return f"https://api.whatsapp.com/send?phone=55{num}&text={msg}"
 
@@ -49,7 +48,6 @@ def listar_ordens():
     else:
         cursor.execute("SELECT * FROM ordens ORDER BY id DESC")
     
-    # Preparando os dados para o HTML (incluindo o link do Zap)
     ordens_data = []
     for row in cursor.fetchall():
         d = dict(row)
@@ -118,10 +116,39 @@ def excluir_estoque(id):
     conn.close()
     return redirect(url_for('listar_estoque'))
 
+@app.route('/baixa_estoque/<int:id>', methods=['POST'])
+def baixa_estoque(id):
+    try:
+        quantidade_baixa = int(request.form.get('quantidade_baixa', 1))
+        if quantidade_baixa < 1:
+            quantidade_baixa = 1
+    except (ValueError, TypeError):
+        quantidade_baixa = 1
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT quantidade FROM estoque WHERE id = ?', (id,))
+    item = cursor.fetchone()
+    if item:
+        nova_qtd = max(0, item[0] - quantidade_baixa)
+        cursor.execute('UPDATE estoque SET quantidade = ? WHERE id = ?', (nova_qtd, id))
+        conn.commit()
+    conn.close()
+    return redirect(url_for('listar_estoque'))
+
+@app.route('/editar_estoque/<int:id>', methods=['POST'])
+def editar_estoque(id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('UPDATE estoque SET peca=?, quantidade=?, preco=? WHERE id=?',
+                   (request.form['peca'], request.form['quantidade'], request.form['preco'], id))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('listar_estoque'))
+
 # --- 5. OUTRAS FUNÇÕES ---
 @app.route('/imprimir/<int:id>')
 def imprimir(id):
-    # Aqui você pode integrar com o ReportLab ou apenas abrir uma tela de impressão
     return f"<h1>Imprimindo OS #{id}</h1><script>window.print();</script>"
 
 @app.route('/logout')
@@ -131,7 +158,6 @@ def logout():
 
 @app.route('/financeiro')
 def financeiro():
-    # Rota básica para não dar erro 404
     return "<h1>Financeiro em Breve</h1><a href='/'>Voltar</a>"
 
 if __name__ == '__main__':

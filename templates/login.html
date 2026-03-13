@@ -1,111 +1,325 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Técnando</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --accent: #8b5cf6;
+            --accent-2: #06b6d4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: #000;
-            height: 100vh;
+            background: #0f0f1a;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .login-card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
+        /* Background glow effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: -20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .btn-login {
-            background: #000;
-            color: #fff;
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .login-wrapper {
             width: 100%;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: 0.3s;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Logo area */
+        .login-brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .brand-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(139,92,246,0.4);
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .brand-sub {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* Card */
+        .login-card {
+            background: #1a1a2e;
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 24px;
+            padding: 36px 32px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .card-sub {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        /* Form elements */
+        .form-group { margin-bottom: 18px; }
+
+        .form-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 13px 16px 13px 42px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            background: rgba(139,92,246,0.06);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+        }
+
+        .form-input::placeholder { color: #475569; }
+
+        /* Button */
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
         }
 
         .btn-login:hover {
-            background: #333;
-            color: #fff;
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(139,92,246,0.4);
         }
 
+        .btn-login:active { transform: translateY(0); }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.07);
+        }
+
+        .divider-text { font-size: 0.75rem; color: #475569; font-weight: 500; }
+
+        /* Register link */
         .btn-register {
-            background: #f8f9fa;
-            color: #333;
             width: 100%;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-top: 10px;
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
         }
 
         .btn-register:hover {
-            background: #e2e6ea;
+            background: rgba(139,92,246,0.08);
+            border-color: rgba(139,92,246,0.3);
+            color: #c4b5fd;
         }
 
-        .logo-login {
-            width: 100px;
-            border-radius: 50%;
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: #334155;
+        }
+
+        /* Alert error */
+        .alert-error {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #f87171;
+            font-size: 0.82rem;
+            font-weight: 600;
             margin-bottom: 20px;
-            border: 3px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 28px 20px; }
         }
     </style>
 </head>
-
 <body>
-    <div class="login-card shadow-lg">
-        <h3 class="fw-bold mb-2">TÉCNANDO</h3>
-        <p class="text-muted small mb-4">Gestão de Assistência Técnica</p>
-
-        <form action="/login" method="POST">
-            <div class="mb-3 text-start">
-                <label class="form-label small fw-bold text-secondary">USUÁRIO</label>
-                <input type="text" name="usuario" class="form-control form-control-lg" placeholder="Seu usuário"
-                    required autofocus>
+    <div class="login-wrapper">
+        <div class="login-brand">
+            <div class="brand-icon">
+                <i class="bi bi-cpu-fill text-white"></i>
             </div>
-            <div class="mb-4 text-start">
-                <label class="form-label small fw-bold text-secondary">SENHA</label>
-                <input type="password" name="senha" class="form-control form-control-lg" placeholder="••••••••"
-                    required>
+            <div class="brand-name">TÉCNANDO</div>
+            <div class="brand-sub">Gestão de Assistência Técnica</div>
+        </div>
+
+        <div class="login-card">
+            <div class="card-title">Bem-vindo de volta!</div>
+            <div class="card-sub">Entre com suas credenciais para acessar o sistema</div>
+
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label class="form-label">Usuário</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-person-fill"></i>
+                        <input type="text" name="usuario" class="form-input" placeholder="Seu usuário" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-lock-fill"></i>
+                        <input type="password" name="senha" class="form-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="bi bi-arrow-right-circle me-2"></i>ENTRAR NO SISTEMA
+                </button>
+            </form>
+
+            <div class="divider">
+                <span class="divider-text">ou</span>
             </div>
 
-            <button type="submit" class="btn btn-login py-3 mb-3">ENTRAR NO SISTEMA</button>
+            <a href="/registrar" class="btn-register">
+                <i class="bi bi-person-plus me-2"></i>Criar Novo Acesso
+            </a>
+        </div>
 
-            <div class="position-relative my-4">
-                <hr class="text-muted">
-                <span
-                    class="position-absolute top-50 start-50 translate-middle bg-white px-2 small text-muted">OU</span>
-            </div>
-
-            <a href="/registrar" class="btn btn-btn-register py-2 text-decoration-none d-block">CRIAR NOVO ACESSO</a>
-        </form>
+        <div class="login-footer">
+            © 2025 Técnando Informática · Todos os direitos reservados
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <script>
-      {% for category, message in messages %}
-        Swal.fire({
-          title: "{{ 'Sucesso' if category == 'success' else 'Atenção' }}",
-          text: "{{ message }}",
-          icon: "{{ category }}", 
-          confirmButtonColor: '#3085d6'
-        });
-      {% endfor %}
-    </script>
-  {% endif %}
-{% endwith %}
-</body>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <script>
+        {% for category, message in messages %}
+        Swal.fire({
+            title: "{{ 'Sucesso!' if category == 'success' else 'Atenção' }}",
+            text: "{{ message }}",
+            icon: "{{ category }}",
+            background: '#1a1a2e',
+            color: '#e2e8f0',
+            confirmButtonColor: '#8b5cf6',
+            borderRadius: '16px'
+        });
+        {% endfor %}
+    </script>
+    {% endif %}
+    {% endwith %}
+</body>
 </html>
