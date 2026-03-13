@@ -1,262 +1,544 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ordens de Serviço - Téc Nando Informática</title>
+    <title>Ordens de Serviço - Técnando</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --sidebar-bg: #000000;
-            --main-bg: #0a0a0a;
-            --card-bg: #111111;
-            --accent-color: #0d6efd;
-            --text-gray: #e0e0e0;
-            --border-color: #222;
+            --bg: #0f0f1a;
+            --sidebar-bg: #13131f;
+            --card-bg: #1a1a2e;
+            --card-border: rgba(139, 92, 246, 0.15);
+            --accent: #8b5cf6;
+            --accent-2: #06b6d4;
+            --accent-hover: #7c3aed;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: var(--main-bg);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Sidebar */
+        /* ===== SIDEBAR ===== */
         .sidebar {
             background: var(--sidebar-bg);
-            min-height: 100vh;
             width: 260px;
+            min-height: 100vh;
             position: fixed;
-            border-right: 1px solid var(--border-color);
-            padding: 25px 15px;
+            left: 0; top: 0;
+            border-right: 1px solid var(--card-border);
             display: flex;
             flex-direction: column;
-            z-index: 1050;
+            padding: 24px 16px;
+            z-index: 1040;
+            transition: transform 0.3s ease;
         }
 
-        .main-content {
-            margin-left: 260px;
-            padding: 40px;
-            width: calc(100% - 260px);
-        }
-
-        .logo-sidebar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-color);
-            margin-bottom: 15px;
-            box-shadow: 0 0 15px rgba(13, 110, 253, 0.3);
-        }
-
-        .nav-link {
-            color: #b0b0b0;
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            transition: all 0.3s;
+        .sidebar-logo {
             display: flex;
             align-items: center;
+            gap: 12px;
+            padding: 8px 12px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 16px;
+        }
+
+        .logo-text { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
+        .logo-sub { font-size: 0.7rem; color: var(--text-muted); }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: var(--text-muted);
             text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 4px;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background: rgba(13, 110, 253, 0.1);
-            color: white;
-            box-shadow: inset 4px 0 0 var(--accent-color);
+        .nav-link i { font-size: 1.1rem; }
+
+        .nav-link:hover { background: rgba(139,92,246,0.1); color: var(--text); }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.1));
+            color: #fff;
+            border: 1px solid rgba(139,92,246,0.3);
         }
 
-        /* --- AJUSTE DE CORES DA TABELA (PARA NÃO SUMIR NO FUNDO) --- */
-        .table-responsive {
-            overflow: visible !important;
+        .nav-link.active i { color: var(--accent); }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
         }
 
-        .table { 
-            color: #ffffff !important; 
-            border-collapse: separate;
-            border-spacing: 0 10px;
-            background-color: transparent !important;
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid rgba(239,68,68,0.2);
         }
 
-        /* Força o fundo das linhas a ser escuro e o texto branco */
-        .table tbody tr { 
-            background-color: #000000 !important; /* Fundo totalmente preto */
-            color: #5f5d5d !important;
-            transition: 0.3s;
-            border: none !important;
+        .btn-logout:hover { background: rgba(239,68,68,0.1); color: #f87171; }
+
+        /* ===== TOPBAR MOBILE ===== */
+        .topbar {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--card-border);
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1035;
         }
 
-        .table td {
-            padding: 15px;
-            border: none !important;
-            vertical-align: middle;
-            color: #5e5d5d !important; /* Garante que o texto seja branco */
+        .topbar-logo { font-weight: 800; font-size: 1rem; color: #fff; }
+        .btn-menu { background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; padding: 4px 8px; }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1035;
         }
 
-        /* Cores de destaque nos dados */
-        .cliente-destaque {
-            color: #ffffff !important;
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            padding: 36px 32px;
+            min-height: 100vh;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title { font-size: 1.6rem; font-weight: 800; color: #fff; }
+        .page-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+
+        /* ===== SEARCH ===== */
+        .search-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 11px 16px 11px 38px;
+            color: var(--text);
+            font-size: 0.875rem;
+            outline: none;
+            transition: 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-input:focus { border-color: var(--accent); background: rgba(139,92,246,0.05); }
+        .search-input::placeholder { color: var(--text-muted); }
+
+        /* ===== TABLE CARD ===== */
+        .table-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .table { margin: 0; }
+
+        .table thead th {
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
-        }
-        
-        .aparelho-destaque {
-            color: #0dcaf0 !important; /* Azul ciano para destacar o aparelho */
-        }
-
-        /* Cabeçalho da tabela */
-        .table thead th {
-            color: #aaaaaa !important;
-            border: none !important;
-            text-transform: uppercase;
-            font-size: 0.85rem;
             letter-spacing: 1px;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+            border-top: none !important;
         }
 
-        /* Status Pills */
-        .status-pill {
-            font-size: 0.7rem;
-            font-weight: 800;
-            padding: 8px 15px;
+        .table tbody tr { transition: 0.2s; }
+        .table tbody tr:hover { background: rgba(255,255,255,0.025); }
+
+        .table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+            vertical-align: middle;
+            background: transparent !important;
+            color: var(--text) !important;
+        }
+
+        .table tbody tr:last-child td { border-bottom: none !important; }
+
+        /* ===== OS STYLES ===== */
+        .os-id { font-weight: 800; color: var(--accent); font-size: 0.9rem; }
+
+        .cliente-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
+        .cliente-phone { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+        .aparelho-name { font-weight: 600; color: var(--accent-2); font-size: 0.88rem; }
+        .aparelho-defeito { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .valor-text { font-weight: 700; color: #10b981; font-size: 0.9rem; }
+
+        /* ===== STATUS PILLS ===== */
+        .status-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
             border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
             border: none;
-            width: 100%;
-            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
         }
 
-        .status-aguardando { background: #ffc107; color: #000; }
-        .status-manutencao { background: #0dcaf0; color: #000; }
-        .status-finalizado { background: #198754; color: #fff; }
+        .status-aguardando { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+        .status-manutencao { background: rgba(6,182,212,0.15); color: #06b6d4; border: 1px solid rgba(6,182,212,0.3); }
+        .status-finalizado { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+        .status-outro { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
 
         /* Dropdown */
         .dropdown-menu {
-            background: #1a1a1a !important;
-            border: 1px solid #333 !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+            background: #1e1e30 !important;
+            border: 1px solid rgba(139,92,246,0.25) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+            padding: 8px !important;
+            min-width: 200px;
         }
 
-        .dropdown-item { color: #ccc !important; padding: 10px 20px; }
-        .dropdown-item:hover { background: #252525 !important; color: #fff !important; }
+        .dropdown-item {
+            color: var(--text-muted) !important;
+            border-radius: 8px;
+            padding: 8px 12px !important;
+            font-size: 0.82rem !important;
+            font-weight: 500 !important;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        /* Botões de Ação */
-        .btn-action {
-            width: 38px;
-            height: 38px;
+        .dropdown-item:hover { background: rgba(139,92,246,0.1) !important; color: #fff !important; }
+        .dropdown-divider { border-color: rgba(255,255,255,0.07) !important; margin: 6px 0 !important; }
+
+        /* ===== ACTIONS ===== */
+        .actions-group { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+
+        .btn-icon {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover { transform: translateY(-1px); color: #fff; }
+        .btn-icon-zap:hover { background: rgba(37,211,102,0.2); border-color: rgba(37,211,102,0.4); color: #25d366; }
+        .btn-icon-print:hover { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); color: #a78bfa; }
+        .btn-icon-del:hover { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.4); color: #ef4444; }
+
+        /* ===== BTN PRIMARY ===== */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
             border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.875rem;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
             text-decoration: none;
-            background: #222;
-            color: white;
-            margin-left: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-primary-custom:hover { opacity: 0.9; transform: translateY(-1px); color: #fff; box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
+
+        /* ===== MODAL ===== */
+        .modal-custom .modal-content {
+            background: #1e1e30;
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 20px;
+            color: var(--text);
+        }
+
+        .modal-custom .modal-header { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 20px 24px; }
+        .modal-custom .modal-title { font-weight: 800; font-size: 1.1rem; }
+        .modal-custom .modal-body { padding: 24px; }
+        .modal-custom .modal-footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 16px 24px; }
+
+        .form-label-custom { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+
+        .input-custom {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+            border-radius: 10px !important;
+            color: var(--text) !important;
+            padding: 12px 16px !important;
+            font-size: 0.9rem !important;
+            transition: 0.2s !important;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-custom:focus {
+            border-color: var(--accent) !important;
+            background: rgba(139,92,246,0.08) !important;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.15) !important;
+            outline: none !important;
+        }
+
+        .input-custom::placeholder { color: var(--text-muted) !important; }
+
+        .btn-modal-save {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            width: 100%;
+            font-size: 0.9rem;
+            cursor: pointer;
             transition: 0.2s;
         }
 
-        .btn-action:hover { transform: translateY(-3px); color: white; }
-        .btn-zap:hover { background: #25d366; }
-        .btn-print:hover { background: #444; }
-        .btn-delete:hover { background: #dc3545; }
+        .btn-modal-save:hover { opacity: 0.9; box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
 
-        .search-box {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: white !important;
-            border-radius: 10px;
-            padding: 12px 20px;
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-icon { font-size: 3rem; opacity: 0.3; margin-bottom: 12px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 991px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; }
+            .topbar { display: flex; }
+            .main-content { margin-left: 0; padding: 80px 16px 24px; }
+            .page-header { flex-direction: column; align-items: flex-start; }
         }
-        
-        .search-box:focus {
-            background: #222;
-            border-color: var(--accent-color);
-            color: white;
+
+        @media (max-width: 575px) {
+            .hide-mobile { display: none !important; }
+            .table thead { display: none; }
+            .table tr { display: block; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.07) !important; border-radius: 12px; padding: 4px; background: var(--card-bg) !important; }
+            .table td { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; font-size: 0.85rem; }
+            .table td::before { content: attr(data-label); font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+            .table td:last-child { border-bottom: none !important; }
+            .actions-group { justify-content: flex-end; }
+            .aparelho-defeito { display: none; }
         }
     </style>
 </head>
-
 <body>
-    <div class="sidebar shadow">
-        <div class="text-center mb-4">
-            <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-sidebar">
-            <h5 class="fw-bold">TÉCNANDO</h5>
+
+<!-- TOPBAR MOBILE -->
+<div class="topbar">
+    <span class="topbar-logo"><i class="bi bi-cpu me-2" style="color: var(--accent)"></i>TÉCNANDO</span>
+    <button class="btn-menu" id="btnMenu"><i class="bi bi-list"></i></button>
+</div>
+
+<!-- OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;box-shadow:0 0 20px rgba(139,92,246,0.4)">
+            <i class="bi bi-cpu-fill text-white"></i>
         </div>
-        <nav>
-            <a href="/" class="nav-link"><i class="bi bi-grid-1x2-fill me-2"></i> Painel</a>
-            <a href="/ordens" class="nav-link active"><i class="bi bi-tools me-2"></i> Ordens de Serviço</a>
-            <a href="/estoque" class="nav-link"><i class="bi bi-box-seam me-2"></i> Estoque</a>
-            <a href="/financeiro" class="nav-link"><i class="bi bi-cash-stack me-2"></i> Financeiro</a>
-        </nav>
-        <div class="mt-auto">
-            <a href="/logout" class="btn btn-outline-danger w-100 border-0"><i class="bi bi-power me-2"></i>Sair</a>
+        <div>
+            <div class="logo-text">TÉCNANDO</div>
+            <div class="logo-sub">Assistência Técnica</div>
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <div>
-                <h2 class="fw-bold mb-0">Gestão de Ordens</h2>
-                <p class="text-muted">Controle total dos serviços em bancada.</p>
+    <nav>
+        <a href="/ordens" class="nav-link active"><i class="bi bi-tools"></i> Ordens de Serviço</a>
+        <a href="/estoque" class="nav-link"><i class="bi bi-box-seam-fill"></i> Estoque</a>
+        <a href="/financeiro" class="nav-link"><i class="bi bi-cash-coin"></i> Financeiro</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="/logout" class="btn-logout"><i class="bi bi-box-arrow-left"></i> Sair do Sistema</a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <div>
+            <div class="page-title"><i class="bi bi-tools me-2" style="color:var(--accent)"></i>Ordens de Serviço</div>
+            <div class="page-subtitle">Controle total dos serviços em bancada</div>
+        </div>
+        <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalOS">
+            <i class="bi bi-plus-lg"></i> Nova Ordem
+        </button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-row">
+        <form action="/ordens" method="GET" style="flex:1;display:flex;gap:10px;flex-wrap:wrap">
+            <div class="search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" name="busca" class="search-input" placeholder="Buscar cliente, aparelho ou #OS..." value="{{ request.args.get('busca', '') }}">
             </div>
-            <button class="btn btn-primary btn-lg rounded-3 px-4 shadow" data-bs-toggle="modal" data-bs-target="#modalOS">
-                <i class="bi bi-plus-lg me-2"></i>Nova Ordem
+            <button type="submit" class="btn-primary-custom" style="padding:10px 18px;">
+                <i class="bi bi-search"></i> <span class="hide-mobile">Pesquisar</span>
             </button>
-        </div>
+        </form>
+    </div>
 
-        <div class="mb-4">
-            <form action="/ordens" method="GET">
-                <div class="input-group">
-                    <input type="text" name="busca" class="form-control search-box" placeholder="Buscar cliente, aparelho ou #OS..." value="{{ request.args.get('busca', '') }}">
-                    <button class="btn btn-primary px-4 fw-bold" type="submit">PESQUISAR</button>
-                </div>
-            </form>
-        </div>
-
+    <!-- TABLE -->
+    <div class="table-card">
         <div class="table-responsive">
-            <table class="table align-middle">
+            <table class="table" id="ordensTable">
                 <thead>
                     <tr>
-                        <th style="width: 80px">ID</th>
-                        <th>CLIENTE</th>
-                        <th>APARELHO</th>
-                        <th>VALOR</th>
-                        <th style="width: 200px">STATUS</th>
-                        <th class="text-end">AÇÕES</th>
+                        <th style="width:70px">OS</th>
+                        <th>Cliente</th>
+                        <th>Aparelho</th>
+                        <th class="hide-mobile">Valor</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for os in ordens %}
                     <tr>
-                        <td class="fw-bold text-primary">#{{ os.id }}</td>
-                        <td class="cliente-destaque">{{ os.cliente }}</td>
-                        <td class="aparelho-destaque"><i class="bi bi-phone me-2"></i>{{ os.aparelho }}</td>
-                        <td class="fw-bold">R$ {{ "%.2f"|format(os.valor) }}</td>
-                        <td>
+                        <td data-label="OS">
+                            <span class="os-id">#{{ os.id }}</span>
+                        </td>
+                        <td data-label="Cliente">
+                            <div class="cliente-name">{{ os.cliente }}</div>
+                            <div class="cliente-phone"><i class="bi bi-telephone me-1"></i>{{ os.telefone }}</div>
+                        </td>
+                        <td data-label="Aparelho">
+                            <div class="aparelho-name"><i class="bi bi-phone me-1"></i>{{ os.aparelho }}</div>
+                            <div class="aparelho-defeito">{{ os.defeito }}</div>
+                        </td>
+                        <td data-label="Valor" class="hide-mobile">
+                            <span class="valor-text">R$ {{ "%.2f"|format(os.valor) }}</span>
+                        </td>
+                        <td data-label="Status">
                             <div class="dropdown">
-                                <button class="status-pill dropdown-toggle 
+                                <button class="status-btn dropdown-toggle
                                     {% if os.status == 'Aguardando Orçamento' %}status-aguardando
                                     {% elif os.status == 'Em Manutenção' %}status-manutencao
                                     {% elif os.status == 'Finalizado' %}status-finalizado
-                                    {% else %}bg-secondary text-white{% endif %}" 
+                                    {% else %}status-outro{% endif %}"
                                     type="button" data-bs-toggle="dropdown">
+                                    {% if os.status == 'Aguardando Orçamento' %}<i class="bi bi-clock"></i>
+                                    {% elif os.status == 'Em Manutenção' %}<i class="bi bi-wrench-adjustable"></i>
+                                    {% elif os.status == 'Finalizado' %}<i class="bi bi-check-circle"></i>
+                                    {% endif %}
                                     {{ os.status }}
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-dark">
-                                    <li><a class="dropdown-item" href="/status/{{ os.id }}/Aguardando Orçamento">🕒 Aguardando Orçamento</a></li>
-                                    <li><a class="dropdown-item" href="/status/{{ os.id }}/Em Manutenção">🛠️ Em Manutenção</a></li>
-                                    <li><hr class="dropdown-divider border-secondary"></li>
-                                    <li><a class="dropdown-item text-success fw-bold" href="/status/{{ os.id }}/Finalizado">✅ Finalizado</a></li>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/status/{{ os.id }}/Aguardando Orçamento"><i class="bi bi-clock" style="color:#f59e0b"></i> Aguardando Orçamento</a></li>
+                                    <li><a class="dropdown-item" href="/status/{{ os.id }}/Em Manutenção"><i class="bi bi-wrench-adjustable" style="color:#06b6d4"></i> Em Manutenção</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/status/{{ os.id }}/Finalizado" style="color:#10b981 !important;font-weight:700 !important"><i class="bi bi-check-circle-fill" style="color:#10b981"></i> Finalizado</a></li>
                                 </ul>
                             </div>
                         </td>
-                        <td class="text-end">
-                            <a href="{{ os.zap_link }}" target="_blank" class="btn-action btn-zap" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
-                            <a href="/imprimir/{{ os.id }}" class="btn-action btn-print" title="Imprimir OS / Garantia"><i class="bi bi-printer"></i></a>
-                            <a href="/excluir/{{ os.id }}" class="btn-action btn-delete" onclick="return confirm('Deseja realmente excluir a OS #{{ os.id }}?')" title="Excluir"><i class="bi bi-trash"></i></a>
+                        <td data-label="Ações">
+                            <div class="actions-group">
+                                <a href="{{ os.zap_link }}" target="_blank" class="btn-icon btn-icon-zap" title="Enviar WhatsApp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="/imprimir/{{ os.id }}" class="btn-icon btn-icon-print" title="Imprimir OS">
+                                    <i class="bi bi-printer-fill"></i>
+                                </a>
+                                <a href="/excluir/{{ os.id }}" class="btn-icon btn-icon-del" title="Excluir OS"
+                                    onclick="return confirm('Deseja excluir a OS #{{ os.id }}?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+                                <div style="font-weight:600;color:var(--text)">Nenhuma ordem encontrada</div>
+                                <div style="font-size:0.82rem;margin-top:4px">Crie uma nova ordem para começar</div>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -265,32 +547,67 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalOS" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow" style="background: #111; border: 1px solid #333; color: white; border-radius: 20px;">
-                <form action="/inserir" method="POST">
-                    <div class="modal-header border-0 p-4">
-                        <h5 class="modal-title fw-bold">Abrir Nova OS</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body p-4 pt-0">
-                        <input type="text" name="cliente" class="form-control search-box mb-3" placeholder="Nome Completo do Cliente" required>
-                        <input type="text" name="telefone" class="form-control search-box mb-3" placeholder="WhatsApp (ex: 11999998888)" required>
-                        <input type="text" name="equipamento" class="form-control search-box mb-3" placeholder="Aparelho e Modelo" required>
-                        <textarea name="defeito" class="form-control search-box mb-3" placeholder="Descrição do Problema" rows="3"></textarea>
-                        <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary text-white">R$</span>
-                            <input type="number" step="0.01" name="valor" class="form-control search-box" placeholder="Valor do Orçamento">
+</main>
+
+<!-- ===== MODAL NOVA OS ===== -->
+<div class="modal fade modal-custom" id="modalOS" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="bi bi-plus-circle-fill me-2" style="color:var(--accent)"></i>Abrir Nova Ordem de Serviço</div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/inserir" method="POST">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Nome do Cliente</label>
+                            <input type="text" name="cliente" class="input-custom" placeholder="Nome completo" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">WhatsApp</label>
+                            <input type="text" name="telefone" class="input-custom" placeholder="Ex: 11999998888" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Aparelho / Modelo</label>
+                            <input type="text" name="equipamento" class="input-custom" placeholder="Ex: Samsung Galaxy A54, iPhone 13..." required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Descrição do Problema</label>
+                            <textarea name="defeito" class="input-custom" placeholder="Descreva o defeito relatado pelo cliente..." rows="3" style="resize:vertical"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Valor do Orçamento (R$)</label>
+                            <input type="number" step="0.01" name="valor" class="input-custom" placeholder="0,00">
                         </div>
                     </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold py-3 rounded-3">CRIAR ORDEM DE SERVIÇO</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-modal-save" style="width:auto;padding:10px 32px">
+                        <i class="bi bi-check-lg me-2"></i>Criar Ordem de Serviço
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const btnMenu = document.getElementById('btnMenu');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    btnMenu.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    });
+
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+    });
+</script>
 </body>
 </html>

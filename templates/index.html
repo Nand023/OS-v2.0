@@ -1,285 +1,481 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - Téc Nando Informática</title>
+    <title>Dashboard - Técnando</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --sidebar-bg: #000000;
-            --main-bg: #0a0a0a;
-            --card-bg: #111111;
-            --accent-color: #0d6efd;
-            --text-gray: #b0b0b0;
+            --bg: #0f0f1a;
+            --sidebar-bg: #13131f;
+            --card-bg: #1a1a2e;
+            --card-border: rgba(139, 92, 246, 0.15);
+            --accent: #8b5cf6;
+            --accent-2: #06b6d4;
+            --accent-hover: #7c3aed;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: var(--main-bg);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
         .sidebar {
             background: var(--sidebar-bg);
-            min-height: 100vh;
             width: 260px;
+            min-height: 100vh;
             position: fixed;
-            border-right: 1px solid #222;
-            padding: 25px 15px;
+            left: 0; top: 0;
+            border-right: 1px solid var(--card-border);
             display: flex;
             flex-direction: column;
-            z-index: 1000;
+            padding: 24px 16px;
+            z-index: 1040;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 16px;
+        }
+
+        .logo-text { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
+        .logo-sub { font-size: 0.7rem; color: var(--text-muted); }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-link:hover { background: rgba(139,92,246,0.1); color: var(--text); }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.1));
+            color: #fff;
+            border: 1px solid rgba(139,92,246,0.3);
+        }
+
+        .nav-link.active i { color: var(--accent); }
+
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .btn-logout:hover { background: rgba(239,68,68,0.1); color: #f87171; }
+
+        .topbar {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--card-border);
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1035;
+        }
+
+        .topbar-logo { font-weight: 800; font-size: 1rem; color: #fff; }
+        .btn-menu { background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; padding: 4px 8px; }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1035;
         }
 
         .main-content {
             margin-left: 260px;
-            padding: 40px;
-            width: calc(100% - 260px);
+            padding: 36px 32px;
+            min-height: 100vh;
         }
 
-        .logo-sidebar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-color);
-            margin-bottom: 15px;
-            box-shadow: 0 0 15px rgba(13, 110, 253, 0.3);
-        }
-
-        .user-card {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 25px;
-        }
-
-        .nav-link {
-            color: var(--text-gray);
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            transition: all 0.3s;
+        /* Header */
+        .page-header {
             display: flex;
-            align-items: center;
-            text-decoration: none;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background: rgba(13, 110, 253, 0.1);
-            color: white;
-            box-shadow: inset 4px 0 0 var(--accent-color);
+        .greeting { font-size: 1.6rem; font-weight: 800; color: #fff; }
+        .greeting span { color: var(--accent); }
+        .greeting-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+        .date-badge {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
         }
 
-        .nav-link i { font-size: 1.2rem; margin-right: 12px; }
+        /* Stats grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
 
         .stat-card {
             background: var(--card-bg);
-            border: 1px solid #222;
+            border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 25px;
+            padding: 20px;
             position: relative;
             overflow: hidden;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
-        .stat-card:hover { border-color: #444; transform: translateY(-3px); }
+        .stat-card:hover { border-color: rgba(139,92,246,0.4); transform: translateY(-2px); }
+
+        .stat-card-accent { border-left: 3px solid var(--accent); }
+        .stat-card-yellow { border-left: 3px solid #f59e0b; }
+        .stat-card-green { border-left: 3px solid #10b981; }
+        .stat-card-red { border-left: 3px solid #ef4444; }
 
         .stat-icon {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 2.5rem;
-            opacity: 0.2;
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
         }
 
-        .chart-box {
-            background: var(--card-bg);
-            border: 1px solid #222;
-            border-radius: 20px;
-            padding: 25px;
-            height: 100%;
-        }
+        .stat-value { font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1; }
+        .stat-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px; }
 
-        .btn-quick {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: white;
-            text-align: left;
-            padding: 20px;
-            border-radius: 15px;
-            transition: 0.3s;
-            text-decoration: none;
-            display: block;
-        }
-
-        .btn-quick:hover {
-            background: #222;
-            border-color: var(--accent-color);
-            color: white;
-        }
-
+        /* Alert */
         .alert-stock {
-            background: rgba(220, 53, 69, 0.1);
-            border: 1px solid rgba(220, 53, 69, 0.2);
-            color: #ff6b6b;
-            border-radius: 12px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        @media (max-width: 992px) {
-            .sidebar { width: 80px; padding: 20px 10px; }
-            .sidebar h5, .sidebar span, .sidebar small, .sidebar hr { display: none; }
-            .main-content { margin-left: 80px; width: calc(100% - 80px); }
-            .nav-link span { display: none; }
+        .alert-stock-icon { color: #ef4444; font-size: 1.2rem; flex-shrink: 0; }
+
+        /* Grid bottom */
+        .bottom-grid { display: grid; grid-template-columns: 6fr 4fr; gap: 20px; }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .card-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+        /* Quick access */
+        .quick-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--text);
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+
+        .quick-link:last-child { margin-bottom: 0; }
+
+        .quick-link:hover {
+            background: rgba(139,92,246,0.08);
+            border-color: rgba(139,92,246,0.3);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .quick-link-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .quick-link-text { font-weight: 600; font-size: 0.875rem; }
+        .quick-link-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .bottom-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 991px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; }
+            .topbar { display: flex; }
+            .main-content { margin-left: 0; padding: 80px 16px 24px; }
+        }
+
+        @media (max-width: 575px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .page-header { flex-direction: column; }
+            .date-badge { display: none; }
         }
     </style>
 </head>
-
 <body>
-    <div class="sidebar">
-        <div class="text-center mb-4">
-            <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-sidebar">
-            <h5 class="fw-bold tracking-tight">TÉC NANDO</h5>
+
+<div class="topbar">
+    <span class="topbar-logo"><i class="bi bi-cpu me-2" style="color:var(--accent)"></i>TÉCNANDO</span>
+    <button class="btn-menu" id="btnMenu"><i class="bi bi-list"></i></button>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;box-shadow:0 0 20px rgba(139,92,246,0.4)">
+            <i class="bi bi-cpu-fill text-white"></i>
+        </div>
+        <div>
+            <div class="logo-text">TÉCNANDO</div>
+            <div class="logo-sub">Assistência Técnica</div>
+        </div>
+    </div>
+
+    <nav>
+        <a href="/" class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+        <a href="/ordens" class="nav-link"><i class="bi bi-tools"></i> Ordens de Serviço</a>
+        <a href="/estoque" class="nav-link"><i class="bi bi-box-seam-fill"></i> Estoque</a>
+        <a href="/financeiro" class="nav-link"><i class="bi bi-cash-coin"></i> Financeiro</a>
+
+        {% if session.get('usuario_login') == 'Luiz' %}
+        <div class="sidebar-divider"></div>
+        <a href="/usuarios" class="nav-link" style="color:#06b6d4"><i class="bi bi-people-fill"></i> Usuários</a>
+        {% endif %}
+    </nav>
+
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px 14px;margin-top:16px;">
+        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Operador</div>
+        <div style="font-weight:700;font-size:0.875rem;margin-top:2px">{{ session.get('usuario_nome', 'Usuário') }}</div>
+    </div>
+
+    <div class="sidebar-footer">
+        <a href="/logout" class="btn-logout"><i class="bi bi-box-arrow-left"></i> Sair do Sistema</a>
+    </div>
+</aside>
+
+<main class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <div>
+            <div class="greeting">Olá, <span>{{ session.get('usuario_nome', '').split()[0] }}!</span></div>
+            <div class="greeting-sub">Aqui está o resumo da sua assistência técnica</div>
+        </div>
+        <div class="date-badge"><i class="bi bi-calendar3 me-2"></i>{{ datetime_now if datetime_now else "" }}</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-accent">
+            <div class="stat-icon" style="background:rgba(139,92,246,0.15)">
+                <i class="bi bi-currency-dollar" style="color:var(--accent)"></i>
+            </div>
+            <div class="stat-value">R$ {{ "%.2f"|format(total) }}</div>
+            <div class="stat-label">Faturamento Total</div>
+        </div>
+        <div class="stat-card stat-card-yellow">
+            <div class="stat-icon" style="background:rgba(245,158,11,0.15)">
+                <i class="bi bi-hourglass-split" style="color:#f59e0b"></i>
+            </div>
+            <div class="stat-value" style="color:#f59e0b">{{ abertas }}</div>
+            <div class="stat-label">Em Manutenção</div>
+        </div>
+        <div class="stat-card stat-card-green">
+            <div class="stat-icon" style="background:rgba(16,185,129,0.15)">
+                <i class="bi bi-check-circle-fill" style="color:#10b981"></i>
+            </div>
+            <div class="stat-value" style="color:#10b981">{{ finalizadas }}</div>
+            <div class="stat-label">Concluídos</div>
+        </div>
+        <div class="stat-card stat-card-red">
+            <div class="stat-icon" style="background:rgba(239,68,68,0.15)">
+                <i class="bi bi-arrow-down-circle" style="color:#ef4444"></i>
+            </div>
+            <div class="stat-value" style="color:#ef4444">R$ {{ "%.2f"|format(pagar) }}</div>
+            <div class="stat-label">Despesas</div>
+        </div>
+    </div>
+
+    <!-- ALERT ESTOQUE BAIXO -->
+    {% if alertas %}
+    <div class="alert-stock">
+        <i class="bi bi-lightning-charge-fill alert-stock-icon"></i>
+        <div>
+            <strong style="color:#f87171">Alerta de Estoque Baixo:</strong>
+            {% for a in alertas %}
+            <span style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:6px;padding:2px 8px;margin-left:4px;font-size:0.78rem;font-weight:700">{{ a.peca }} ({{ a.quantidade }})</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+        <div class="chart-card">
+            <div class="card-title">
+                <i class="bi bi-pie-chart-fill" style="color:var(--accent)"></i>
+                Status das Ordens
+            </div>
+            <div style="height:280px;display:flex;align-items:center;justify-content:center">
+                <canvas id="graficoStatus"></canvas>
+            </div>
         </div>
 
-        <div class="user-card text-center">
-            <small class="text-muted d-block">Operador</small>
-            <span class="fw-bold">{{ session['usuario_nome'] }}</span>
-        </div>
+        <div class="quick-card">
+            <div class="card-title">
+                <i class="bi bi-lightning-fill" style="color:#f59e0b"></i>
+                Acesso Rápido
+            </div>
 
-        <nav>
-            <a href="/" class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> <span>Dashboard</span></a>
-            <a href="/ordens" class="nav-link"><i class="bi bi-tools"></i> <span>Ordens de Serviço</span></a>
-            <a href="/estoque" class="nav-link"><i class="bi bi-box-seam"></i> <span>Estoque</span></a>
-            <a href="/financeiro" class="nav-link"><i class="bi bi-cash-stack"></i> <span>Financeiro</span></a>
-            
-            {% if session['usuario_login'] == 'Luiz' %}
-            <hr style="border-color: #333;">
-            <a href="/usuarios" class="nav-link text-info"><i class="bi bi-people"></i> <span>Usuários</span></a>
-            {% endif %}
-        </nav>
+            <a href="/ordens" class="quick-link">
+                <div class="quick-link-icon" style="background:rgba(139,92,246,0.15)">
+                    <i class="bi bi-plus-lg" style="color:var(--accent)"></i>
+                </div>
+                <div>
+                    <div class="quick-link-text">Nova Ordem de Serviço</div>
+                    <div class="quick-link-sub">Abrir OS para cliente</div>
+                </div>
+                <i class="bi bi-chevron-right ms-auto" style="color:var(--text-muted);font-size:0.75rem"></i>
+            </a>
 
-        <div class="mt-auto">
-            <a href="/logout" class="btn btn-outline-danger w-100 border-0">
-                <i class="bi bi-power me-2"></i>Sair
+            <a href="/estoque" class="quick-link">
+                <div class="quick-link-icon" style="background:rgba(6,182,212,0.15)">
+                    <i class="bi bi-search" style="color:var(--accent-2)"></i>
+                </div>
+                <div>
+                    <div class="quick-link-text">Consultar Estoque</div>
+                    <div class="quick-link-sub">Verificar peças disponíveis</div>
+                </div>
+                <i class="bi bi-chevron-right ms-auto" style="color:var(--text-muted);font-size:0.75rem"></i>
+            </a>
+
+            <a href="/financeiro" class="quick-link">
+                <div class="quick-link-icon" style="background:rgba(16,185,129,0.15)">
+                    <i class="bi bi-bar-chart-fill" style="color:#10b981"></i>
+                </div>
+                <div>
+                    <div class="quick-link-text">Relatório Financeiro</div>
+                    <div class="quick-link-sub">Ver receitas e despesas</div>
+                </div>
+                <i class="bi bi-chevron-right ms-auto" style="color:var(--text-muted);font-size:0.75rem"></i>
             </a>
         </div>
     </div>
 
-    <div class="main-content">
-        <header class="d-flex justify-content-between align-items-center mb-5">
-            <div>
-                <h2 class="fw-bold m-0">Bem-vindo, {{ session['usuario_nome'].split()[0] }}!</h2>
-                <p class="text-muted">Aqui está o resumo da sua assistência técnica.</p>
-            </div>
-            <div class="text-end">
-                <span class="badge bg-dark p-2 border border-secondary">{{ datetime_now if datetime_now else "" }}</span>
-            </div>
-        </header>
+</main>
 
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <small class="text-muted fw-bold">FATURAMENTO</small>
-                    <h3 class="fw-bold mt-1 text-primary">R$ {{ "%.2f"|format(total) }}</h3>
-                    <i class="bi bi-currency-dollar stat-icon text-primary"></i>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <small class="text-muted fw-bold">EM MANUTENÇÃO</small>
-                    <h3 class="fw-bold mt-1 text-warning">{{ abertas }}</h3>
-                    <i class="bi bi-hourglass-split stat-icon text-warning"></i>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <small class="text-muted fw-bold">CONCLUÍDOS</small>
-                    <h3 class="fw-bold mt-1 text-success">{{ finalizadas }}</h3>
-                    <i class="bi bi-check-circle stat-icon text-success"></i>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <small class="text-muted fw-bold">DESPESAS</small>
-                    <h3 class="fw-bold mt-1 text-danger">R$ {{ "%.2f"|format(pagar) }}</h3>
-                    <i class="bi bi-arrow-down-circle stat-icon text-danger"></i>
-                </div>
-            </div>
-        </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Mobile menu
+    const btnMenu = document.getElementById('btnMenu');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
 
-        {% if alertas %}
-        <div class="alert alert-stock d-flex align-items-center mb-4">
-            <i class="bi bi-lightning-charge-fill me-3 fs-4"></i>
-            <div>
-                <strong>Alerta de Estoque:</strong> 
-                {% for a in alertas %}
-                    <span class="badge bg-danger rounded-pill ms-1">{{ a.peca }} ({{ a.quantidade }})</span>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
+    btnMenu.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    });
 
-        <div class="row g-4">
-            <div class="col-lg-7">
-                <div class="chart-box">
-                    <h5 class="fw-bold mb-4">Status das Ordens</h5>
-                    <div style="height: 320px;">
-                        <canvas id="graficoStatus"></canvas>
-                    </div>
-                </div>
-            </div>
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+    });
 
-            <div class="col-lg-5">
-                <div class="chart-box">
-                    <h5 class="fw-bold mb-4">Acesso Rápido</h5>
-                    <div class="d-grid gap-3">
-                        <a href="/ordens" class="btn-quick">
-                            <i class="bi bi-plus-lg text-primary me-2"></i> Nova Ordem de Serviço
-                        </a>
-                        <a href="/estoque" class="btn-quick">
-                            <i class="bi bi-search text-warning me-2"></i> Consultar Peça em Estoque
-                        </a>
-                        <a href="/financeiro" class="btn-quick">
-                            <i class="bi bi-file-earmark-bar-graph text-info me-2"></i> Relatório Financeiro
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('graficoStatus');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Aguardando Orçamento', 'Em Manutenção', 'Finalizado'],
-                datasets: [{
-                    data: [{{ aguardando }}, {{ manutencao }}, {{ finalizadas }}],
-                    backgroundColor: ['#ffc107', '#0d6efd', '#198754'],
-                    borderWidth: 0,
-                    hoverOffset: 20
-                }]
+    // Chart
+    const ctx = document.getElementById('graficoStatus');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Aguardando Orçamento', 'Em Manutenção', 'Finalizado'],
+            datasets: [{
+                data: [{{ aguardando }}, {{ manutencao }}, {{ finalizadas }}],
+                backgroundColor: ['rgba(245,158,11,0.8)', 'rgba(6,182,212,0.8)', 'rgba(16,185,129,0.8)'],
+                borderColor: ['#f59e0b', '#06b6d4', '#10b981'],
+                borderWidth: 2,
+                hoverOffset: 16
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#64748b', padding: 20, font: { size: 11, family: 'Inter' }, usePointStyle: true }
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: '#888', padding: 20, font: { size: 12 } }
-                    }
-                },
-                cutout: '75%'
-            }
-        });
-    </script>
+            cutout: '70%'
+        }
+    });
+</script>
 </body>
 </html>

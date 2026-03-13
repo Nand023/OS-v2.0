@@ -1,220 +1,759 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estoque - Técnando Informática</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --main-bg: #050505;
-            --card-bg: #111111;
-            --accent-blue: #0d6efd;
-            --text-white: #ffffff;
-            --border-color: #222;
+            --bg: #0f0f1a;
+            --sidebar-bg: #13131f;
+            --card-bg: #1a1a2e;
+            --card-border: rgba(139, 92, 246, 0.15);
+            --accent: #8b5cf6;
+            --accent-2: #06b6d4;
+            --accent-hover: #7c3aed;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: var(--main-bg);
-            color: var(--text-white);
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        /* Sidebar Fixa */
-        .sidebar {
-            background: #000;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             min-height: 100vh;
-            width: 260px;
-            position: fixed;
-            border-right: 1px solid var(--border-color);
-            padding: 25px 15px;
+            overflow-x: hidden;
         }
 
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            background: var(--sidebar-bg);
+            width: 260px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0; top: 0;
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            z-index: 1040;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 16px;
+        }
+
+        .logo-img {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(139,92,246,0.4);
+        }
+
+        .logo-text { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
+        .logo-sub { font-size: 0.7rem; color: var(--text-muted); }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-link i { font-size: 1.1rem; }
+
+        .nav-link:hover {
+            background: rgba(139,92,246,0.1);
+            color: var(--text);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.1));
+            color: #fff;
+            border: 1px solid rgba(139,92,246,0.3);
+        }
+
+        .nav-link.active i { color: var(--accent); }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .btn-logout:hover { background: rgba(239,68,68,0.1); color: #f87171; }
+
+        /* ===== TOPBAR MOBILE ===== */
+        .topbar {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--card-border);
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1035;
+        }
+
+        .topbar-logo { font-weight: 800; font-size: 1rem; color: #fff; }
+        .btn-menu { background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; padding: 4px 8px; }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1035;
+        }
+
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-left: 260px;
-            padding: 40px;
+            padding: 36px 32px;
+            min-height: 100vh;
         }
 
-        /* TÍTULOS */
-        h1, h2 { color: white !important; font-weight: 700; }
-        .text-muted { color: #888 !important; }
-
-        /* O SEGREDO PARA MATAR O BRANCO DA TABELA */
-        .table-container {
-            background: #111 !important; /* Força fundo escuro */
-            border-radius: 15px;
-            border: 1px solid #333;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .table {
-            background-color: transparent !important;
-            color: white !important;
-            margin-bottom: 0;
-        }
-
-        /* Remove qualquer listra branca do Bootstrap */
-        .table :not(caption) > * > * {
-            background-color: transparent !important;
-            color: white !important;
-            border-bottom: 1px solid #222 !important;
-            box-shadow: none !important;
-        }
-
-        .table thead th {
-            color: #ffffff !important;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            border: none !important;
-        }
-
-        /* Destaques do Estoque */
-        .item-peca {
-            color: #0dcaf0 !important; /* Azul ciano */
-            font-weight: 600;
-        }
-
-        .item-preco {
-            color: #2ecc71 !important; /* Verde dinheiro */
-            font-weight: bold;
-        }
-
-        .qty-box {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            padding: 5px 12px;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
-        .baixo-estoque {
-            border-color: #ff4757;
-            color: #ff4757 !important;
-        }
-
-        /* Botões de Ação */
-        .btn-action {
-            width: 35px;
-            height: 35px;
-            border-radius: 8px;
-            display: inline-flex;
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            background: #222;
-            color: white;
-            text-decoration: none;
-            margin-left: 5px;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title { font-size: 1.6rem; font-weight: 800; color: #fff; }
+        .page-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+
+        /* ===== STAT CARDS ===== */
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
             transition: 0.2s;
         }
 
-        .btn-action:hover { background: #333; color: #0dcaf0; }
-        .btn-delete:hover { background: #dc3545; color: white; }
+        .stat-card:hover { border-color: rgba(139,92,246,0.4); transform: translateY(-2px); }
 
-        /* Inputs do Modal */
-        .form-control-dark {
-            background: #ffffff !important;
-            border: 1px solid #333 !important;
-            color: rgb(0, 0, 0) !important;
-            padding: 12px;
+        .stat-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
         }
+
+        .stat-value { font-size: 1.5rem; font-weight: 800; color: #fff; }
+        .stat-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ===== TABLE CARD ===== */
+        .table-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .table-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .table-card-title { font-size: 1rem; font-weight: 700; color: #fff; }
+
+        .search-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 8px 16px;
+            color: var(--text);
+            font-size: 0.85rem;
+            outline: none;
+            transition: 0.2s;
+            width: 220px;
+        }
+
+        .search-input:focus { border-color: var(--accent); background: rgba(139,92,246,0.05); }
+        .search-input::placeholder { color: var(--text-muted); }
+
+        .table { margin: 0; }
+        .table thead th {
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+            border-top: none !important;
+        }
+
+        .table tbody tr { transition: 0.2s; }
+        .table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+        .table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+            vertical-align: middle;
+            background: transparent !important;
+            color: var(--text) !important;
+        }
+
+        .table tbody tr:last-child td { border-bottom: none !important; }
+
+        /* ===== ITENS ===== */
+        .peca-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
+        .peca-id { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+        .qty-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .qty-ok { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+        .qty-low { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+        .qty-critical { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+
+        .preco-value { font-weight: 700; color: #10b981; font-size: 0.9rem; }
+
+        /* ===== ACTION BUTTONS ===== */
+        .actions-group { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+
+        .btn-icon {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover { transform: translateY(-1px); color: #fff; }
+        .btn-icon-baixa:hover { background: rgba(245,158,11,0.2); border-color: rgba(245,158,11,0.4); color: #f59e0b; }
+        .btn-icon-edit:hover { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); color: #a78bfa; }
+        .btn-icon-del:hover { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.4); color: #ef4444; }
+
+        /* ===== BTN PRIMARY ===== */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary-custom:hover { opacity: 0.9; transform: translateY(-1px); color: #fff; box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
+
+        /* ===== MODAL ===== */
+        .modal-custom .modal-content {
+            background: #1e1e30;
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 20px;
+            color: var(--text);
+        }
+
+        .modal-custom .modal-header {
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 20px 24px;
+        }
+
+        .modal-custom .modal-title { font-weight: 800; font-size: 1.1rem; }
+        .modal-custom .modal-body { padding: 24px; }
+        .modal-custom .modal-footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 16px 24px; }
+
+        .form-label-custom { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+
+        .input-custom {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+            border-radius: 10px !important;
+            color: var(--text) !important;
+            padding: 12px 16px !important;
+            font-size: 0.9rem !important;
+            transition: 0.2s !important;
+            width: 100%;
+        }
+
+        .input-custom:focus {
+            border-color: var(--accent) !important;
+            background: rgba(139,92,246,0.08) !important;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.15) !important;
+            outline: none !important;
+        }
+
+        .input-custom::placeholder { color: var(--text-muted) !important; }
+
+        .btn-modal-save {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            width: 100%;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-modal-save:hover { opacity: 0.9; box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
+
+        .btn-modal-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            width: 100%;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-modal-danger:hover { opacity: 0.9; box-shadow: 0 4px 20px rgba(239,68,68,0.4); }
+
+        .badge-alert {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #f87171;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon { font-size: 3rem; opacity: 0.3; margin-bottom: 12px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 991px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; }
+            .topbar { display: flex; }
+            .main-content { margin-left: 0; padding: 80px 16px 24px; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .search-input { width: 100%; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (max-width: 575px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .table thead { display: none; }
+            .table tr { display: block; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.07) !important; border-radius: 12px; padding: 4px; }
+            .table td { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; font-size: 0.85rem; }
+            .table td::before { content: attr(data-label); font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+            .table td:last-child { border-bottom: none !important; }
+            .actions-group { justify-content: flex-end; }
+        }
+
+        /* ===== TOAST ===== */
+        .toast-custom {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px 20px;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-
 <body>
-    <div class="sidebar">
-        <div class="mb-5 px-3">
-            <h4 class="text-primary fw-bold">TÉCNANDO</h4>
+
+<!-- TOPBAR MOBILE -->
+<div class="topbar">
+    <span class="topbar-logo"><i class="bi bi-cpu me-2" style="color: var(--accent)"></i>TÉCNANDO</span>
+    <button class="btn-menu" id="btnMenu"><i class="bi bi-list"></i></button>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;box-shadow:0 0 20px rgba(139,92,246,0.4)">
+            <i class="bi bi-cpu-fill text-white"></i>
         </div>
-        <nav class="nav flex-column">
-            <a href="/ordens" class="nav-link text-muted py-3"><i class="bi bi-tools me-2"></i> Ordens</a>
-            <a href="/estoque" class="nav-link text-white fw-bold py-3"><i class="bi bi-box-seam me-2"></i> Estoque</a>
-            <a href="/financeiro" class="nav-link text-muted py-3"><i class="bi bi-cash-stack me-2"></i> Financeiro</a>
-        </nav>
+        <div>
+            <div class="logo-text">TÉCNANDO</div>
+            <div class="logo-sub">Assistência Técnica</div>
+        </div>
     </div>
 
-    <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <nav>
+        <a href="/ordens" class="nav-link"><i class="bi bi-tools"></i> Ordens de Serviço</a>
+        <a href="/estoque" class="nav-link active"><i class="bi bi-box-seam-fill"></i> Estoque</a>
+        <a href="/financeiro" class="nav-link"><i class="bi bi-cash-coin"></i> Financeiro</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="/logout" class="btn-logout"><i class="bi bi-box-arrow-left"></i> Sair do Sistema</a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <div>
+            <div class="page-title"><i class="bi bi-box-seam-fill me-2" style="color:var(--accent)"></i>Estoque</div>
+            <div class="page-subtitle">Controle de peças e componentes</div>
+        </div>
+        <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalNovoItem">
+            <i class="bi bi-plus-lg"></i> Novo Item
+        </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        {% set total_itens = estoque | length %}
+        {% set baixo = estoque | selectattr('quantidade', 'lt', 3) | list | length %}
+        {% set valor_total = estoque | sum(attribute='preco') %}
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(139,92,246,0.15);">
+                <i class="bi bi-archive-fill" style="color:var(--accent)"></i>
+            </div>
             <div>
-                <h1>Estoque</h1>
-                <p class="text-muted">Gestão de componentes e peças.</p>
+                <div class="stat-value">{{ total_itens }}</div>
+                <div class="stat-label">Itens Cadastrados</div>
             </div>
-            <button class="btn btn-primary px-4 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#modalEstoque">
-                <i class="bi bi-plus-lg me-2"></i>Novo Item
-            </button>
         </div>
-
-        <div class="table-container">
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Peça / Componente</th>
-                            <th class="text-center">Quantidade</th>
-                            <th>Preço Custo</th>
-                            <th class="text-end">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in estoque %}
-                        <tr>
-                            <td>
-                                <div class="item-peca">{{ item.peca }}</div>
-                                <small class="text-muted">ID: #{{ item.id }}</small>
-                            </td>
-                            <td class="text-center">
-                                <div class="qty-box {% if item.quantidade < 3 %}baixo-estoque{% endif %}">
-                                    {{ item.quantidade }}
-                                </div>
-                            </td>
-                            <td><span class="item-preco">R$ {{ "%.2f"|format(item.preco) }}</span></td>
-                            <td class="text-end">
-                                <a href="/editar_estoque/{{ item.id }}" class="btn-action"><i class="bi bi-pencil"></i></a>
-                                <a href="/excluir_estoque/{{ item.id }}" class="btn-action btn-delete" onclick="return confirm('Excluir peça?')"><i class="bi bi-trash"></i></a>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">Nenhuma peça cadastrada.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(239,68,68,0.15);">
+                <i class="bi bi-exclamation-triangle-fill" style="color:#ef4444"></i>
+            </div>
+            <div>
+                <div class="stat-value" style="color:#ef4444">{{ baixo }}</div>
+                <div class="stat-label">Estoque Baixo</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(16,185,129,0.15);">
+                <i class="bi bi-cash-stack" style="color:#10b981"></i>
+            </div>
+            <div>
+                <div class="stat-value" style="color:#10b981">R$&nbsp;{{ "%.0f"|format(valor_total) }}</div>
+                <div class="stat-label">Valor em Custo</div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modalEstoque" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: #111; border: 1px solid #333; color: white;">
-                <form action="/inserir_estoque" method="POST">
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold">Adicionar ao Estoque</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- ALERT BAIXO ESTOQUE -->
+    {% if estoque | selectattr('quantidade', 'lt', 3) | list | length > 0 %}
+    <div class="badge-alert">
+        <i class="bi bi-lightning-charge-fill"></i>
+        <strong>Atenção!</strong>
+        {% for item in estoque %}{% if item.quantidade < 3 %}<span style="background:rgba(239,68,68,0.2);border-radius:6px;padding:2px 8px;margin-left:4px">{{ item.peca }} ({{ item.quantidade }})</span>{% endif %}{% endfor %}
+        precisam de reposição.
+    </div>
+    {% endif %}
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <div class="table-card-title"><i class="bi bi-list-ul me-2" style="color:var(--accent)"></i>Lista de Peças</div>
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍  Buscar peça...">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table" id="stockTable">
+                <thead>
+                    <tr>
+                        <th>Peça / Componente</th>
+                        <th class="text-center">Qtd</th>
+                        <th>Preço Custo</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in estoque %}
+                    <tr>
+                        <td data-label="Peça">
+                            <div class="peca-name">{{ item.peca }}</div>
+                            <div class="peca-id">#{{ item.id }}</div>
+                        </td>
+                        <td class="text-center" data-label="Quantidade">
+                            <span class="qty-badge 
+                                {% if item.quantidade == 0 %}qty-critical
+                                {% elif item.quantidade < 3 %}qty-low
+                                {% else %}qty-ok{% endif %}">
+                                {{ item.quantidade }}
+                            </span>
+                        </td>
+                        <td data-label="Preço">
+                            <span class="preco-value">R$ {{ "%.2f"|format(item.preco) }}</span>
+                        </td>
+                        <td data-label="Ações">
+                            <div class="actions-group">
+                                <!-- Botão Dar Baixa -->
+                                <button class="btn-icon btn-icon-baixa"
+                                    title="Dar Baixa no Estoque"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalBaixa{{ item.id }}">
+                                    <i class="bi bi-dash-circle-fill"></i>
+                                </button>
+                                <!-- Botão Editar -->
+                                <button class="btn-icon btn-icon-edit"
+                                    title="Editar"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditar{{ item.id }}">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                <!-- Botão Excluir -->
+                                <a href="/excluir_estoque/{{ item.id }}"
+                                    class="btn-icon btn-icon-del"
+                                    title="Excluir"
+                                    onclick="return confirm('Deseja excluir a peça {{ item.peca }}?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+                                <div style="font-weight:600;color:var(--text)">Nenhuma peça cadastrada</div>
+                                <div style="font-size:0.82rem;margin-top:4px">Clique em "Novo Item" para começar</div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<!-- ===== MODAIS DE BAIXA (um por item) ===== -->
+{% for item in estoque %}
+<div class="modal fade modal-custom" id="modalBaixa{{ item.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title"><i class="bi bi-dash-circle-fill me-2" style="color:#f59e0b"></i>Dar Baixa</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px">{{ item.peca }}</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/baixa_estoque/{{ item.id }}" method="POST">
+                <div class="modal-body">
+                    <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;margin-bottom:18px;text-align:center">
+                        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Estoque Atual</div>
+                        <div style="font-size:2rem;font-weight:800;color:#f59e0b;line-height:1.2">{{ item.quantidade }}</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted)">unidades</div>
                     </div>
-                    <div class="modal-body">
-                        <input type="text" name="peca" class="form-control form-control-dark mb-3" placeholder="Nome da Peça" required>
-                        <div class="row">
-                            <div class="col-6">
-                                <input type="number" name="quantidade" class="form-control form-control-dark mb-3" placeholder="Qtd" required>
-                            </div>
-                            <div class="col-6">
-                                <input type="number" step="0.01" name="preco" class="form-control form-control-dark mb-3" placeholder="Preço Custo">
-                            </div>
+                    <label class="form-label-custom">Quantidade a dar baixa</label>
+                    <input type="number"
+                        name="quantidade_baixa"
+                        class="input-custom"
+                        value="1"
+                        min="1"
+                        max="{{ item.quantidade }}"
+                        required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary w-50 rounded-3" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-modal-danger" style="width:45%;padding:10px">
+                        <i class="bi bi-dash-circle me-1"></i> Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal fade modal-custom" id="modalEditar{{ item.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="bi bi-pencil-fill me-2" style="color:var(--accent)"></i>Editar Peça</div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/editar_estoque/{{ item.id }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label-custom">Nome da Peça</label>
+                        <input type="text" name="peca" class="input-custom" value="{{ item.peca }}" required>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label-custom">Quantidade</label>
+                            <input type="number" name="quantidade" class="input-custom" value="{{ item.quantidade }}" min="0" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label-custom">Preço Custo (R$)</label>
+                            <input type="number" step="0.01" name="preco" class="input-custom" value="{{ item.preco }}">
                         </div>
                     </div>
-                    <div class="modal-footer border-0">
-                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">SALVAR PEÇA</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-modal-save"><i class="bi bi-check-lg me-2"></i>Salvar Alterações</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+{% endfor %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ===== MODAL NOVO ITEM ===== -->
+<div class="modal fade modal-custom" id="modalNovoItem" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="bi bi-plus-circle-fill me-2" style="color:var(--accent)"></i>Novo Item no Estoque</div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/inserir_estoque" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label-custom">Nome da Peça / Componente</label>
+                        <input type="text" name="peca" class="input-custom" placeholder="Ex: Tela iPhone 11, HD 1TB..." required>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label-custom">Quantidade</label>
+                            <input type="number" name="quantidade" class="input-custom" placeholder="0" min="0" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label-custom">Preço de Custo (R$)</label>
+                            <input type="number" step="0.01" name="preco" class="input-custom" placeholder="0,00">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-modal-save"><i class="bi bi-plus-lg me-2"></i>Adicionar ao Estoque</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Mobile menu toggle
+    const btnMenu = document.getElementById('btnMenu');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    btnMenu.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    });
+
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+    });
+
+    // Search filter
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#stockTable tbody tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(val) ? '' : 'none';
+        });
+    });
+</script>
 </body>
 </html>
